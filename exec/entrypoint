@@ -1,0 +1,7 @@
+#!/bin/bash
+# if [ -n ${TZ} ] && [ -f /usr/share/zoneinfo/${TZ} ]; then
+#     echo "Timezone: ${TZ}"
+#     ln -sf /usr/share/zoneinfo/${TZ}  /etc/localtime
+#     # /etc/init.d/ntp start
+# fi
+su duzy && exec bash "$@"
