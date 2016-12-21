@@ -1,0 +1,30 @@
+#!/bin/bash
+#echo ${BASH_SOURCE[0]} ${BASH_SOURCE[${#BASH_SOURCE[@]}-1]}
+
+if [[ "x$(readlink $0)x" != "xxx" ]]; then
+    echo "Don't run me directly!"
+    exit -1
+fi
+
+D=$(dirname $(dirname $(dirname `readlink -f ${BASH_SOURCE[0]}`)))
+N=$(basename $0)
+if [[ ! -d "$D/data/$n" ]]; then
+    mkdir -p "$D/data/$n" || {
+        echo "'$D/data/$n' is missing!"
+        exit -1
+    }
+fi
+
+# NOTE: use --privileged to enable gdb
+exec docker run \
+     --rm=true -i -t \
+     --privileged \
+     --name=blockchain-mail-node-$N \
+     -v /etc/localtime:/etc/localtime:ro \
+     -v $D:$D \
+     -w $D/docker \
+     -e "TZ=Asia/Shanghai" \
+     -e "NODE=$n" \
+     blockchain-mail-exec
+
+#    blockchain-mail-devel

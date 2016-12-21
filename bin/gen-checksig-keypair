@@ -1,0 +1,40 @@
+#!/bin/bash
+#
+# Same as this code segment:
+# 
+#     CKey key;
+#     key.MakeNewKey(false);
+#
+#     CPrivKey priv = key.GetPrivKey();
+#     CPubKey pub = key.GetPubKey();
+#     std::cout << "coindbase: priv: " << HexStr(priv) << std::endl;
+#     std::cout << "coindbase: pub: " << HexStr(pub) << std::endl;
+# 
+# The pub hex string can be used in chainparams.cpp:CreateGenesisBlock
+# (OP_CHECKSIG).
+# 
+openssl ecparam -genkey -name secp256k1 -out genesis.pem || exit -1
+openssl ec -in genesis.pem -text > genesis.hex
+
+# Find genesis:
+#
+# if (genesis.GetHash() != uint256S("0x25057c9a2661aa804eadde7f30e872e3848bc2524bd9ebef00bb1530611ce00c")) {
+#   for (genesis.nNonce = 0; true; ++genesis.nNonce) {
+#     auto h = genesis.GetHash();
+#     bool negative, overflow;
+#     arith_uint256 a, b(UintToArith256(h)), limit(UintToArith256(consensus.powLimit));
+#     a.SetCompact(genesis.nBits, &negative, &overflow);
+#     if (UintToArith256(h) <= limit)
+#       std::cout
+#         << std::dec << genesis.nNonce << ": " << h.GetHex() << ", "
+#         << std::hex << genesis.nBits << ", (" << limit.GetCompact() << "), "
+#         << a.GetHex() << ", "
+#         << b.GetHex() << ", "
+#         << negative << ", " << overflow
+#         << std::endl ;
+#     if (negative || a == 0 || overflow || a > limit) continue;
+#     if (b > a) continue;
+#     std::cout << "0x" << genesis.hashMerkleRoot.GetHex() << std::endl;
+#     break;
+#   }
+# }

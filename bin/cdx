@@ -1,0 +1,4 @@
+#!/bin/bash
+D="$1"
+unshift
+cd "$D" && "$@"

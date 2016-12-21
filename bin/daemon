@@ -1,0 +1,12 @@
+#!/bin/bash
+D=$(dirname $(dirname $(dirname `readlink -f ${BASH_SOURCE[0]}`)))
+if [[ ! -x "$D/source/src/bitcoind" ]]; then
+    echo "'$D/source/src/bitcoind' is missing!"
+    exit -1
+fi
+if [[ ! -d "$D/data/$n" ]]; then
+    echo "'$D/data/$n' is missing!"
+    exit -2
+fi
+exec $D/source/src/bitcoind -daemon --datadir=$D/data/$NODE "$@"
+#echo $D/source/src/bitcoind -daemon --datadir=$D/data/$NODE "$@"
