@@ -1,0 +1,7 @@
+;; -*- emacs-lisp -*-
+(setq docking-args
+      '("--privileged"
+        "-v" "/etc/localtime:/etc/localtime:ro"
+        "-v" "/task/Bitse/blockchain-mail:/task/Bitse/blockchain-mail"
+        "-w" "/task/Bitse/blockchain-mail/docker"
+        "-e" "TZ=Asia/Shanghai"))
