@@ -1,0 +1,64 @@
+#+LaTeX_CLASS_OPTIONS: [colorlinks=true,urlcolor=blue,secnums]
+* Changing chain parameters and genesis.
+  
+  Relating files:
+  - *chainparams.cpp*
+  - *chainparamsbase.cpp*
+  
+** Create new key pairs for genensis coinbase
+   Generate =CHECKSIG= keys for genesis block (=CreateGenesisBlock=, =OP_CHECKSIG=):
+   #+BEGIN_SRC shell
+   openssl ecparam -genkey -name secp256k1 -out genesis.pem || exit -1
+   openssl ec -in genesis.pem -text > genesis.hex
+   #+END_SRC
+   It's identical with the following code segment:
+   #+BEGIN_SRC c++
+   CKey key;
+   key.MakeNewKey(false);
+   CPrivKey priv = key.GetPrivKey();
+   CPubKey pub = key.GetPubKey();
+   std::cout << "coindbase: priv: " << HexStr(priv) << std::endl;
+   std::cout << "coindbase: pub: " << HexStr(pub) << std::endl;
+   #+END_SRC
+** Re-calculate the genensis block
+*** Get the genesis block time:
+    Specified as the first argument for =CreateGenesisBlock=:
+    #+BEGIN_SRC c++
+      date +%s
+    #+END_SRC
+    The second block must be mint in =nMaxTipAge= after genesis block time.
+      + =nMaxTipAge= (validation.cpp, init.cpp, =-maxtipage=)
+      + =DEFAULT_MAX_TIP_AGE= (validation.h)
+*** Get the compact value of =PoWLimit=:
+    It's used as the third argument for CreateGenesisBlock:
+    #+BEGIN_SRC c++
+      std::cout << "PowLimit: (compact) 0x" << std::hex << UintToArith256(consensus.powLimit).GetCompact() << std::endl;
+    #+END_SRC
+*** Calculate the genensis block:
+    #+BEGIN_SRC c++
+      genesis = CreateGenesisBlock(1472918144, 0, 0x2000ffff, 1, 50 * COIN);
+      if (genesis.GetHash() != uint256S("0x005a75a4cbd17824f7db4730872bbc113648f22b9852cd70b15330dcdc890e8c")) {
+        for (genesis.nNonce = 0; true /*UintToArith256(genesis.GetHash()) > UintToArith256(consensus.powLimit)*/; ++genesis.nNonce) {
+          auto h = genesis.GetHash();
+          bool negative, overflow;
+          arith_uint256 a, b(UintToArith256(h)), limit(UintToArith256(consensus.powLimit));
+          a.SetCompact(genesis.nBits, &negative, &overflow);
+          if (UintToArith256(h) <= limit)
+          std::cout
+            << std::dec << genesis.nNonce << ": " << h.GetHex() << ", "
+            << std::hex << genesis.nBits << ", " << limit.GetCompact() << ", "
+            << a.GetHex() << ", "
+            << b.GetHex() << ", "
+            << negative << ", " << overflow
+            << std::endl ;
+          if (negative || a == 0 || overflow || a > limit) continue;
+          if (b > a) continue;
+          break;
+        }
+      }
+    #+END_SRC
+** Change message magic code, network ports and more
+   - [ ] =nRPCPort= in chainparamsbase.cpp
+   - [ ] =pchMessageStart= in chainparams.cpp
+   - [ ] =base58Prefixes= in chainparams.cpp (address prefixes)
+   - [ ] =checkpointData= in chainparams.cpp

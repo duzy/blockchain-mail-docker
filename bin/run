@@ -10,5 +10,4 @@ if [[ ! -d "$D/data/$NODE" ]]; then
         exit -2
     }
 fi
-exec $D/source/src/bitcoind -debug=1 -daemon -maxtipage=864000 --datadir=$D/data/$NODE "$@"
-#echo $D/source/src/bitcoind -daemon --datadir=$D/data/$NODE "$@"
+exec $D/source/src/bitcoind -debug=1 -printtoconsole -maxtipage=864000 --datadir=$D/data/$NODE "$@"

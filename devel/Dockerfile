@@ -51,8 +51,7 @@ RUN chmod 0777 /tmp
 
 VOLUME /task
 
-EXPOSE 9333/tcp
-EXPOSE 19333/tcp
+EXPOSE 8181/tcp 18181/tcp 8125/tcp 18125/tcp
 
 USER root:root
 ENTRYPOINT ["/bin/entrypoint"]
