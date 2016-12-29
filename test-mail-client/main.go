@@ -2,22 +2,23 @@ package main
 
 import (
         "net/smtp"
-        "flags"
+        "flag"
         "fmt"
         "log"
 )
 
 var (
-        optionPort = 8125
+        optionPort int
 )
 
 func init() {
-        flag.IntVar(&optionPort, "port", "port number")
+        flag.IntVar(&optionPort, "port", 8125, "port number")
 }
 
 func main() {
         var (
-                ip
+                ip string
+                addr string
         )
         
         flag.Parse()
@@ -27,9 +28,14 @@ func main() {
         } else if 1 < n {
                 log.Fatalf("wrong arguments")
                 return
+        } else {
+                ip = "172.17.0.4"
         }
+
+        addr = fmt.Sprintf("%s:%d", ip, optionPort)
+        log.Printf("Dial %v", addr)
         
-        c, err := smtp.Dial(fmt.Sprintf("%s:%s"), ip, optionPort)
+        c, err := smtp.Dial(addr)
         if err != nil {
                 log.Fatal(err)
         }
