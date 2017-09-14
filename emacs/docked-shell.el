@@ -100,7 +100,7 @@ on lines which don't start with a prompt."
     (let* ((num (or current-prefix-arg 0))
            (image "blockchain-mail-exec")
            (prog (or docked-shell-docker-command (getenv "DOCKER")))
-	   (name (or (format "blockchain-mail-node-%d" num)
+	   (name (or (format "%s-node-%d" image num)
                      (file-name-nondirectory prog)))
            (prev (shell-command-to-string (format "docker ps -a | grep %s | awk '{print $1}'" name)))
 	   (xargs-name (intern-soft (concat "explicit-" name "-args")))

@@ -5,4 +5,4 @@ if (($# == 0)); then # or ${#args[@]}
 else
     args=($@)
 fi
-go run main.go "${args[@]}"
+$GOROOT/bin/go run main.go "${args[@]}"

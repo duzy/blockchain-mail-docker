@@ -1,5 +1,5 @@
 TAGFIX := blockchain-mail-
-V := /task/Bitse
+V := /a.workspace/task/Bitse
 W := $V/blockchain-mail
 SOURCE := $W/source
 
