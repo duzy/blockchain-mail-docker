@@ -30,7 +30,7 @@
       + =nMaxTipAge= (validation.cpp, init.cpp, =-maxtipage=)
       + =DEFAULT_MAX_TIP_AGE= (validation.h)
 *** Get the compact value of =PoWLimit=:
-    It's used as the third argument for `CreateGenesisBlock`:
+    It's used as the third argument for =CreateGenesisBlock=:
     #+BEGIN_SRC c++
       std::cout << "PowLimit: (compact) 0x" << std::hex << UintToArith256(consensus.powLimit).GetCompact() << std::endl;
     #+END_SRC
